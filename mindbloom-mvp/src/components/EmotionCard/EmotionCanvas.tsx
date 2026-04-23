@@ -122,27 +122,27 @@ const EmotionCanvas: React.FC = () => {
     }
   }, [isConnectMode, selectedCardId, addConnection]);
 
-  // 处理卡片删除
+  // 处理卡片删除 - 使用 store action
   const handleCardDelete = useCallback((id: string) => {
     // 删除卡片及其所有连接
-    const { sessions, currentSessionId } = useStore.getState();
-    if (!currentSessionId) return;
+    const { getCurrentSession, addCards, addConnection } = useStore.getState();
+    const session = getCurrentSession();
+    if (!session) return;
     
-    const newCards = sessions
-      .find(s => s.id === currentSessionId)?.cards.filter(c => c.id !== id) || [];
-    const newConnections = sessions
-      .find(s => s.id === currentSessionId)?.connections.filter(
-        c => c.fromId !== id && c.toId !== id
-      ) || [];
+    // 创建新的卡片和连接数组（排除被删除的）
+    const newCards = session.cards.filter(c => c.id !== id);
+    const newConnections = session.connections.filter(
+      c => c.fromId !== id && c.toId !== id
+    );
     
-    // 更新状态
+    // 使用 setState 更新当前会话
+    const { sessions } = useStore.getState();
     const updatedSessions = sessions.map(s => 
-      s.id === currentSessionId 
+      s.id === session.id 
         ? { ...s, cards: newCards, connections: newConnections }
         : s
     );
     
-    // 直接更新 sessions
     useStore.setState({ sessions: updatedSessions });
   }, []);
 

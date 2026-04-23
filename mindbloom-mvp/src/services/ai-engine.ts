@@ -1,5 +1,73 @@
 // MindBloom AI 情绪分析引擎
-// 支持规则匹配 + 语义分析 + 情绪强度评估 + 上下文感知
+// 支持规则匹配 + 语义分析 + 情绪强度评估 + 上下文感知 + 深度学习模型
+
+// 模型分析结果接口
+export interface ModelEmotionResult {
+  label: string;
+  confidence: number;
+  all_scores: Record<string, number>;
+}
+
+// 深度学习模型分析器
+class DeepLearningAnalyzer {
+  private apiUrl: string;
+  private cache: Map<string, ModelEmotionResult> = new Map();
+  
+  constructor(apiUrl: string = "http://localhost:8000") {
+    this.apiUrl = apiUrl;
+  }
+  
+  async analyze(text: string): Promise<ModelEmotionResult | null> {
+    // 检查缓存
+    const cacheKey = this.getCacheKey(text);
+    if (this.cache.has(cacheKey)) {
+      return this.cache.get(cacheKey)!;
+    }
+    
+    try {
+      const response = await fetch(`${this.apiUrl}/analyze`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ text }),
+      });
+      
+      if (!response.ok) {
+        console.warn("Model API not available, falling back to rule-based analysis");
+        return null;
+      }
+      
+      const result: ModelEmotionResult = await response.json();
+      
+      // 缓存结果（限制缓存大小）
+      if (this.cache.size > 100) {
+        const firstKey = this.cache.keys().next().value;
+        if (firstKey) {
+          this.cache.delete(firstKey);
+        }
+      }
+      this.cache.set(cacheKey, result);
+      
+      return result;
+    } catch (error) {
+      console.warn("Model API error:", error);
+      return null;
+    }
+  }
+  
+  private getCacheKey(text: string): string {
+    // 简单哈希
+    return text.trim().toLowerCase() || "";
+  }
+  
+  clearCache(): void {
+    this.cache.clear();
+  }
+}
+
+// 创建全局分析器实例
+const modelAnalyzer = new DeepLearningAnalyzer();
 
 export interface EmotionAnalysis {
   labels: string[];
@@ -468,13 +536,13 @@ const generateResponse = (
   const opening = openings[Math.floor(Math.random() * openings.length)];
   const closing = closings[Math.floor(Math.random() * closings.length)];
   
-  const emotionResp = (emotionResponses as any)[primaryLabel] || emotionResponses['复杂'];
+  const emotionResp = emotionResponses[primaryLabel as keyof typeof emotionResponses] || emotionResponses['复杂'];
   const emotionPart = emotionResp[Math.floor(Math.random() * emotionResp.length)];
   
   let topicPart = '';
   if (keywords.length > 0) {
     const primaryTopic = keywords[0];
-    const topicResp = (topicResponses as any)[primaryTopic] || topicResponses['生活'];
+    const topicResp = topicResponses[primaryTopic as keyof typeof topicResponses] || topicResponses['生活'];
     topicPart = topicResp[Math.floor(Math.random() * topicResp.length)];
   }
   
@@ -506,7 +574,7 @@ const generateResponse = (
 // 生成建议
 const generateSuggestions = (primaryLabel: string): string[] => {
   const { suggestions } = RESPONSE_TEMPLATES;
-  return (suggestions as any)[primaryLabel] || suggestions['焦虑'] || [];
+  return suggestions[primaryLabel as keyof typeof suggestions] || suggestions['焦虑'] || [];
 };
 
 // 主分析函数 - 单轮
