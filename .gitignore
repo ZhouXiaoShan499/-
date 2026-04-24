@@ -40,6 +40,22 @@ coverage/
 .eslintcache
 .tsbuildinfo
 
+<<<<<<< HEAD
+=======
+# 忽略 AI 模型大文件
+public/models/**/*.safetensors
+public/models/**/*.bin
+public/models/**/*.onnx
+public/models/**/*.pt
+public/models/**/*.pth
+public/models/**/*.h5
+
+# 忽略运行时文件
+node_modules/
+dist/
+.DS_Store
+
+>>>>>>> feature/addedit1
 # ------------ 项目本地数据（你的加密存储）------------
 # 如果你未来把本地存储导出成文件，这里可以忽略
 # *.localstorage

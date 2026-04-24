@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Heart, Wind, Star, Sun, Cloud, Droplet } from 'lucide-react';
@@ -93,10 +94,31 @@ const playPopSound = () => {
 };
 
 interface GameOverlayProps {
+=======
+/**
+ * 解压游戏全屏浮层
+ * 气球捏破小游戏，用于释放压力
+ * 
+ * 职责：仅负责整体布局和组件组合
+ * 游戏逻辑已移入 hooks/useGameLogic.ts
+ * 子组件已拆分至 Balloon.tsx 和 WaterDrop.tsx
+ * 音频服务已移入 services/audio.ts
+ */
+
+import React from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { X, Heart, Star, Sun, Cloud } from 'lucide-react';
+import { useGameLogic } from '../../hooks/useGameLogic';
+import Balloon from './Balloon';
+import WaterDrop from './WaterDrop';
+
+export interface GameOverlayProps {
+>>>>>>> feature/addedit1
   onClose: () => void;
 }
 
 const GameOverlay: React.FC<GameOverlayProps> = ({ onClose }) => {
+<<<<<<< HEAD
   const { balloonCount, setBalloonCount } = useStore();
   const [balloons, setBalloons] = useState<{ id: string; x: number; y: number; color: string }[]>([]);
   const [drops, setDrops] = useState<{ id: string; x: number; y: number }[]>([]);
@@ -152,6 +174,29 @@ const GameOverlay: React.FC<GameOverlayProps> = ({ onClose }) => {
 
   const removeDrop = (id: string) => {
     setDrops(prev => prev.filter(d => d.id !== id));
+=======
+  const {
+    balloons,
+    drops,
+    balloonCount,
+    setBalloonCount,
+    currentIntensity,
+    updateBalloonConfigByEmotion,
+    handlePop,
+    removeDrop,
+    setContainerRef,
+    getContainerHeight,
+  } = useGameLogic();
+
+  // 获取容器高度供 WaterDrop 使用
+  const containerHeight = getContainerHeight();
+
+  // 根据情绪强度获取提示文字
+  const getEmotionHint = () => {
+    if (currentIntensity < 0.33) return "平静 - 深呼吸，感受内心的宁静";
+    if (currentIntensity < 0.66) return "中等 - 慢慢捏破气球，释放压力";
+    return "激烈 - 用力捏破气球，释放情绪";
+>>>>>>> feature/addedit1
   };
 
   return (
@@ -163,9 +208,21 @@ const GameOverlay: React.FC<GameOverlayProps> = ({ onClose }) => {
     >
       {/* Background Decor */}
       <div className="absolute inset-0 opacity-10 pointer-events-none">
+<<<<<<< HEAD
         <Sun size={120} className="absolute top-10 right-10 text-yellow-400" />
         <Cloud size={80} className="absolute top-20 left-20 text-blue-200" />
         <Cloud size={60} className="absolute bottom-40 right-40 text-blue-100" />
+=======
+        <div className="absolute top-10 right-10 text-yellow-400">
+          <Sun size={120} />
+        </div>
+        <div className="absolute top-20 left-20 text-blue-200">
+          <Cloud size={80} />
+        </div>
+        <div className="absolute bottom-40 right-40 text-blue-100">
+          <Cloud size={60} />
+        </div>
+>>>>>>> feature/addedit1
       </div>
 
       {/* Header */}
@@ -173,10 +230,19 @@ const GameOverlay: React.FC<GameOverlayProps> = ({ onClose }) => {
         <div className="flex items-center space-x-6">
           <div className="flex items-center space-x-3">
             <Heart className="text-pink-400 fill-pink-400" />
+<<<<<<< HEAD
             <h2 className="text-2xl font-bold text-gray-700 tracking-tight">解压气球 ({balloons.length}/{balloonCount})</h2>
           </div>
           
           {/* Balloon Count Selector inside Game */}
+=======
+            <h2 className="text-2xl font-bold text-gray-700 tracking-tight">
+              解压气球 ({balloons.length}/{balloonCount})
+            </h2>
+          </div>
+          
+          {/* Balloon Count Selector */}
+>>>>>>> feature/addedit1
           <div className="flex items-center space-x-3 bg-indigo-50 px-4 py-1.5 rounded-full border border-indigo-100 shadow-sm">
             <span className="text-xs font-bold text-indigo-600 uppercase tracking-wider">气球数量</span>
             <div className="flex items-center bg-white rounded-lg border border-indigo-100 overflow-hidden">
@@ -208,7 +274,11 @@ const GameOverlay: React.FC<GameOverlayProps> = ({ onClose }) => {
       </div>
 
       {/* Game Area */}
+<<<<<<< HEAD
       <div className="flex-1 relative">
+=======
+      <div ref={setContainerRef} className="flex-1 relative game-area">
+>>>>>>> feature/addedit1
         <AnimatePresence>
           {balloons.map(b => (
             <Balloon key={b.id} {...b} onPop={handlePop} />
@@ -221,6 +291,10 @@ const GameOverlay: React.FC<GameOverlayProps> = ({ onClose }) => {
               key={drop.id} 
               x={drop.x} 
               y={drop.y} 
+<<<<<<< HEAD
+=======
+              containerHeight={containerHeight}
+>>>>>>> feature/addedit1
               onComplete={() => removeDrop(drop.id)} 
             />
           ))}
@@ -231,7 +305,11 @@ const GameOverlay: React.FC<GameOverlayProps> = ({ onClose }) => {
       <div className="p-12 text-center z-10">
         <p className="text-gray-400 text-sm italic tracking-widest flex items-center justify-center space-x-2">
           <Star size={14} className="fill-gray-300 text-gray-300" />
+<<<<<<< HEAD
           <span>点击气球，释放内心的压力</span>
+=======
+          <span>{getEmotionHint()}</span>
+>>>>>>> feature/addedit1
           <Star size={14} className="fill-gray-300 text-gray-300" />
         </p>
       </div>
