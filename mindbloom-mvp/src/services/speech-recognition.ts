@@ -13,25 +13,17 @@ export interface RecognitionOptions {
   timeout?: number; // 自动超时停止时间 (ms), 默认 30 秒
 }
 
-<<<<<<< HEAD
-let recognitionTimeout: ReturnType<typeof setTimeout> | null = null;
-=======
 // 使用 Map 管理多个识别实例的超时，避免泄漏
 const recognitionTimeouts: Map<any, ReturnType<typeof setTimeout>> = new Map();
 
 export interface RecognitionHandle {
   stop: () => void;
 }
->>>>>>> feature/addedit1
 
 export const startRecognition = (
   options: RecognitionOptions | ((text: string) => void),
   onError?: (err: string) => void
-<<<<<<< HEAD
-) => {
-=======
 ): RecognitionHandle | null => {
->>>>>>> feature/addedit1
   if (!SpeechRecognition) {
     onError?.("当前浏览器不支持语音输入");
     return null;
@@ -50,8 +42,6 @@ export const startRecognition = (
 
   let finalTranscript = '';
 
-<<<<<<< HEAD
-=======
   // 清理函数：清除超时并移除 Map 中的记录
   const cleanup = () => {
     const timeout = recognitionTimeouts.get(recognition);
@@ -61,7 +51,6 @@ export const startRecognition = (
     }
   };
 
->>>>>>> feature/addedit1
   recognition.onresult = (e: any) => {
     let interimTranscript = '';
     
@@ -85,20 +74,12 @@ export const startRecognition = (
   recognition.onerror = (e: any) => {
     console.error("语音识别错误:", e.error);
     config.onError?.(e.error);
-<<<<<<< HEAD
-    clearRecognitionTimeout();
-=======
     cleanup();
->>>>>>> feature/addedit1
   };
 
   recognition.onend = () => {
     console.log("语音识别结束");
-<<<<<<< HEAD
-    clearRecognitionTimeout();
-=======
     cleanup();
->>>>>>> feature/addedit1
     config.onEnd?.();
   };
 
@@ -106,33 +87,6 @@ export const startRecognition = (
 
   // 设置超时自动停止
   if (config.timeout) {
-<<<<<<< HEAD
-    recognitionTimeout = setTimeout(() => {
-      console.log("语音识别超时，自动停止");
-      recognition.stop();
-    }, config.timeout);
-  }
-
-  return recognition;
-};
-
-export const stopRecognition = (recognition: any) => {
-  clearRecognitionTimeout();
-  if (recognition) {
-    try {
-      recognition.stop();
-    } catch (e) {
-      console.warn("停止语音识别时出错:", e);
-    }
-  }
-};
-
-const clearRecognitionTimeout = () => {
-  if (recognitionTimeout) {
-    clearTimeout(recognitionTimeout);
-    recognitionTimeout = null;
-  }
-=======
     const timeout = setTimeout(() => {
       console.log("语音识别超时，自动停止");
       try {
@@ -159,7 +113,6 @@ const clearRecognitionTimeout = () => {
 
 export const stopRecognition = (handle: RecognitionHandle | null) => {
   handle?.stop();
->>>>>>> feature/addedit1
 };
 
 // 获取浏览器语音识别支持状态

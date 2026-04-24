@@ -1,20 +1,3 @@
-<<<<<<< HEAD
-import json
-import torch
-import pandas as pd
-from transformers import (
-    AutoTokenizer,
-    AutoModelForSequenceClassification,
-    Trainer,
-    TrainingArguments
-)
-
-# ==============================================
-# 1. 加载数据集
-# ==============================================
-print("📊 加载数据集...")
-with open("mindbloom-emotion-dataset.json", "r", encoding="utf-8") as f:
-=======
 import os
 os.environ["HF_ENDPOINT"] = "https://hf-mirror.com"
 import json
@@ -31,13 +14,13 @@ from transformers import (
 )
 
 # ==============================================
-# 1. 配置（我帮你调到最优）
+# 1. 配置
 # ==============================================
 DATA_PATH = "mindbloom-emotion-dataset-extended.json"
-MODEL_NAME = "hfl/rbt3"  # 轻量中文BERT，效果最好
+MODEL_NAME = "hfl/rbt3"  # 轻量中文 BERT，效果最好
 MAX_LEN = 64
 BATCH_SIZE = 8
-EPOCHS = 5  # 5轮刚好，不会过拟合
+EPOCHS = 5
 LR = 2e-5
 
 # ==============================================
@@ -45,7 +28,6 @@ LR = 2e-5
 # ==============================================
 print("📊 加载数据集...")
 with open(DATA_PATH, "r", encoding="utf-8") as f:
->>>>>>> feature/addedit1
     data = json.load(f)
 
 df = pd.DataFrame(data)
@@ -57,15 +39,6 @@ print(f"✅ 数据集加载完成，共 {len(df)} 条")
 print(f"情绪标签：{labels}")
 
 # ==============================================
-<<<<<<< HEAD
-# 2. 选择轻量中文模型（适合导出到前端）
-# ==============================================
-print("🧠 加载模型...")
-model_name = "uer/chinese-roberta-wwm-ext-tiny"  # 超轻量，速度快，适合本地
-tokenizer = AutoTokenizer.from_pretrained(model_name)
-model = AutoModelForSequenceClassification.from_pretrained(
-    model_name,
-=======
 # 3. 划分训练集 / 测试集
 # ==============================================
 train_df, test_df = train_test_split(
@@ -79,29 +52,12 @@ print("🧠 加载模型...")
 tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
 model = AutoModelForSequenceClassification.from_pretrained(
     MODEL_NAME,
->>>>>>> feature/addedit1
     num_labels=len(labels),
     id2label=id2label,
     label2id=label2id
 )
 
 # ==============================================
-<<<<<<< HEAD
-# 3. 数据预处理
-# ==============================================
-def tokenize_function(examples):
-    return tokenizer(
-        examples["text"],
-        padding="max_length",
-        truncation=True,
-        max_length=64
-    )
-
-class SimpleDataset(torch.utils.data.Dataset):
-    def __init__(self, df):
-        self.df = df
-        self.encodings = tokenize_function(df.to_dict(orient="list"))
-=======
 # 5. 数据预处理
 # ==============================================
 class EmotionDataset(torch.utils.data.Dataset):
@@ -113,7 +69,6 @@ class EmotionDataset(torch.utils.data.Dataset):
             truncation=True,
             max_length=MAX_LEN
         )
->>>>>>> feature/addedit1
     
     def __len__(self):
         return len(self.df)
@@ -128,25 +83,6 @@ class EmotionDataset(torch.utils.data.Dataset):
         )
         return item
 
-<<<<<<< HEAD
-train_dataset = SimpleDataset(df)
-
-# ==============================================
-# 4. 训练配置
-# ==============================================
-training_args = TrainingArguments(
-    output_dir="./mindbloom-trained-model",
-    per_device_train_batch_size=8,
-    num_train_epochs=15,
-    logging_steps=10,
-    learning_rate=2e-5,
-    save_strategy="epoch",
-    logging_dir="./logs",
-)
-
-# ==============================================
-# 5. 开始训练
-=======
 train_dataset = EmotionDataset(train_df)
 test_dataset = EmotionDataset(test_df)
 
@@ -161,7 +97,7 @@ def compute_metrics(eval_pred):
     return {"accuracy": acc, "f1": f1}
 
 # ==============================================
-# 7. 训练配置（最优参数）
+# 7. 训练配置
 # ==============================================
 training_args = TrainingArguments(
     output_dir="./mindbloom-checkpoints",
@@ -181,25 +117,12 @@ training_args = TrainingArguments(
 
 # ==============================================
 # 8. 开始训练
->>>>>>> feature/addedit1
 # ==============================================
 print("🚀 开始训练...")
 trainer = Trainer(
     model=model,
     args=training_args,
     train_dataset=train_dataset,
-<<<<<<< HEAD
-)
-
-trainer.train()
-
-# ==============================================
-# 6. 保存最终模型
-# ==============================================
-model.save_pretrained("./mindbloom-final-model")
-tokenizer.save_pretrained("./mindbloom-final-model")
-print("✅ 训练完成！模型已保存到 ./mindbloom-final-model")
-=======
     eval_dataset=test_dataset,
     compute_metrics=compute_metrics,
 )
@@ -270,6 +193,5 @@ print("🎉 训练完成！")
 print(f"✅ 最佳模型已保存到：./mindbloom-best-model")
 print(f"✅ 可视化曲线已保存到：./training_curves.png")
 print(f"✅ 最终准确率：{final_eval['eval_accuracy']:.4f}")
-print(f"✅ 最终F1分数：{final_eval['eval_f1']:.4f}")
+print(f"✅ 最终 F1 分数：{final_eval['eval_f1']:.4f}")
 print("="*50)
->>>>>>> feature/addedit1

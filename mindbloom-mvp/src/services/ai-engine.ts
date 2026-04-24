@@ -1,7 +1,4 @@
 // MindBloom AI 情绪分析引擎
-<<<<<<< HEAD
-// 支持规则匹配 + 语义分析 + 情绪强度评估 + 上下文感知
-=======
 // 支持规则匹配 + 语义分析 + 情绪强度评估 + 上下文感知 + 深度学习模型
 
 // 模型分析结果接口
@@ -71,7 +68,6 @@ class DeepLearningAnalyzer {
 
 // 创建全局分析器实例
 const modelAnalyzer = new DeepLearningAnalyzer();
->>>>>>> feature/addedit1
 
 export interface EmotionAnalysis {
   labels: string[];
@@ -120,7 +116,7 @@ const EMOTION_DICTIONARY: Record<string, { labels: string[]; intensity: number; 
     isNegative: false
   },
   '疲惫': { 
-    labels: ['累', '疲惫', '无力', '倦怠', '没劲', ' exhaustion'], 
+    labels: ['累', '疲惫', '无力', '倦怠', '没劲', 'exhaustion'], 
     intensity: 0.65,
     isNegative: true
   },
@@ -540,21 +536,13 @@ const generateResponse = (
   const opening = openings[Math.floor(Math.random() * openings.length)];
   const closing = closings[Math.floor(Math.random() * closings.length)];
   
-<<<<<<< HEAD
-  const emotionResp = (emotionResponses as any)[primaryLabel] || emotionResponses['复杂'];
-=======
   const emotionResp = emotionResponses[primaryLabel as keyof typeof emotionResponses] || emotionResponses['复杂'];
->>>>>>> feature/addedit1
   const emotionPart = emotionResp[Math.floor(Math.random() * emotionResp.length)];
   
   let topicPart = '';
   if (keywords.length > 0) {
     const primaryTopic = keywords[0];
-<<<<<<< HEAD
-    const topicResp = (topicResponses as any)[primaryTopic] || topicResponses['生活'];
-=======
     const topicResp = topicResponses[primaryTopic as keyof typeof topicResponses] || topicResponses['生活'];
->>>>>>> feature/addedit1
     topicPart = topicResp[Math.floor(Math.random() * topicResp.length)];
   }
   
@@ -586,11 +574,7 @@ const generateResponse = (
 // 生成建议
 const generateSuggestions = (primaryLabel: string): string[] => {
   const { suggestions } = RESPONSE_TEMPLATES;
-<<<<<<< HEAD
-  return (suggestions as any)[primaryLabel] || suggestions['焦虑'] || [];
-=======
   return suggestions[primaryLabel as keyof typeof suggestions] || suggestions['焦虑'] || [];
->>>>>>> feature/addedit1
 };
 
 // 主分析函数 - 单轮
