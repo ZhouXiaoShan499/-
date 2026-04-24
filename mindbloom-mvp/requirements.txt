@@ -1,6 +1,25 @@
-fastapi==0.104.1
-uvicorn[standard]==0.24.0
-pydantic==2.5.0
-torch==2.1.0
-transformers==4.35.0
-numpy==1.24.0
+# MindBloom 项目依赖
+# 建议定期更新以获取安全补丁
+
+# Web 框架
+fastapi>=0.109.0
+uvicorn[standard]>=0.27.0
+pydantic>=2.5.3
+
+# 深度学习
+torch>=2.1.2
+transformers>=4.37.0
+numpy>=1.26.0
+
+# 数据处理
+pandas>=2.2.0
+scikit-learn>=1.4.0
+
+# 可视化
+matplotlib>=3.8.0
+
+# 数据集处理
+datasets>=2.16.0
+
+# 安全工具（开发环境）
+# pip-audit>=2.6.0
