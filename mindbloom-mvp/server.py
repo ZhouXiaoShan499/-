@@ -11,6 +11,7 @@ import torch
 import json
 import os
 import logging
+import threading
 from transformers import BertTokenizer, BertForSequenceClassification
 import numpy as np
 from time import time
